@@ -3,31 +3,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OrderItemsReserver.Dto;
-
 
 namespace OrderItemsReserver
 {
     public class Function1
     {
-        [FunctionName("Function1")]
+        [FunctionName("OrderItemsReserver")]
         public async Task Run([ServiceBusTrigger("finalassignmentqueue", Connection = "ServiceBusConnectionString")]string myQueueItem, ILogger log)
         {
             #region configuration
 
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Environment.CurrentDirectory)
-                .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables()
-                .Build();
-
-            var blobConnectionString = config["BlobConnectionString"];
-            var fileContainerName = config["FileContainerName"];
-            var logicAppUrl = config["LogicAppUrl"];
-            var email = config["Email"];
+            var blobConnectionString = "DefaultEndpointsProtocol=https;AccountName=finalassignment;AccountKey=4KcT3GVF0FuM5Gsg6bkAwxkMoiaSwq6tOezeNc1zqJj1NVhsnsWjfDVdMGM0NeKhrAHbIcVNKLAj+AStd7KoyQ==;EndpointSuffix=core.windows.net";
+            var fileContainerName = "final-assignment-container";
+            var logicAppUrl = "https://prod-34.eastus2.logic.azure.com:443/workflows/7c4815333e8748f19eef647ddcd992c7/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=3LKGhYf3gn2XvRWVOwRdHBveFWgYKTeHNkaLpXmwy8M";
+            var email = "unixqnx@mail.ru";
 
             #endregion
 
