@@ -26,7 +26,7 @@ public class DeliveryOrderService: IDeliveryOrderService
 
     public async Task CreateDeliveryOrderAsync(Order order)
     {
-        //var content = new StringContent(JsonSerializer.Serialize(order), Encoding.UTF8, "application/json");
-        //await _httpClient.PostAsync(_deliveryOrderServerUrl, content);
+        var content = new StringContent(JsonSerializer.Serialize(order), Encoding.UTF8, "application/json");
+        await _httpClient.PostAsync(_deliveryOrderServerUrl, content);
     }
 }
