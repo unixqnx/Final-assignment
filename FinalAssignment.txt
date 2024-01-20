@@ -1,0 +1,82 @@
+
+
+==DB================================
+Server=tcp:final-assignment.database.windows.net,1433;Initial Catalog=catalog;Persist Security Info=False;User ID=dmitriy;Password=unixQNXx86;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+====================================
+
+==KV==================================
+FinalAssignmentKV
+https://finalassignmentkv.vault.azure.net/
+
+az login
+az keyvault create --resource-group FinalAssignment --location EastUS2 --name FinalAssignmentKV
+az webapp identity assign --name "FinalAssignmentWebEastUS2" --resource-group "FinalAssignment"
+{
+  "principalId": "2d17bf24-fd8c-407d-b978-f07d09f408bd",
+  "tenantId": "c7cf4260-e623-44a5-9e68-77d63f0dc46b",
+  "type": "SystemAssigned",
+  "userAssignedIdentities": null
+}
+az keyvault set-policy --name "FinalAssignmentKV" --object-id "2d17bf24-fd8c-407d-b978-f07d09f408bd" --secret-permissions get list
+------------------
+az webapp identity assign --name "FinalAssignmentPublicApi" --resource-group "FinalAssignment"
+{
+  "principalId": "3d29961b-d0b0-4275-8ba0-5e70f17d86f2",
+  "tenantId": "c7cf4260-e623-44a5-9e68-77d63f0dc46b",
+  "type": "SystemAssigned",
+  "userAssignedIdentities": null
+}
+az keyvault set-policy --name "FinalAssignmentKV" --object-id "3d29961b-d0b0-4275-8ba0-5e70f17d86f2" --secret-permissions get list
+------------------
+az webapp identity assign --name "FinalAssignmentWebWestEurope" --resource-group "FinalAssignment"
+{
+  "principalId": "1318c6a8-5971-4937-b1f0-f95b9e19a011",
+  "tenantId": "c7cf4260-e623-44a5-9e68-77d63f0dc46b",
+  "type": "SystemAssigned",
+  "userAssignedIdentities": null
+}
+az keyvault set-policy --name "FinalAssignmentKV" --object-id "1318c6a8-5971-4937-b1f0-f95b9e19a011" --secret-permissions get list
+------------------
+az webapp identity assign --name "FinalAssignmentWebEastUS" --resource-group "FinalAssignment"
+az keyvault set-policy --name "FinalAssignmentKV" --object-id "0348ea31-0856-4ef0-80f8-784e7d600bce" --secret-permissions get list
+az webapp identity assign --name "FinalAssignmentWebEastUS" --resource-group "FinalAssignment" --slot staging
+az keyvault set-policy --name "FinalAssignmentKV" --object-id "2e1bb48f-40aa-43d1-9853-b199461bd1e8" --secret-permissions get list
+------------------
+az webapp identity assign --name "FinalAssignmentWebWestEurope" --resource-group "FinalAssignment"
+az keyvault set-policy --name "FinalAssignmentKV" --object-id "f4bd0b29-b2ad-4f7a-9836-33effeb6017d" --secret-permissions get list
+
+az webapp identity assign --name "FinalAssignmentWebWestEurope" --resource-group "FinalAssignment" --slot staging
+az keyvault set-policy --name "FinalAssignmentKV" --object-id "e8650714-aba8-4be0-9e03-35dcd7c95dcb" --secret-permissions get list
+
+
+
+AZURE_KEY_VAULT_ENDPOINT
+https://finalassignmentkv.vault.azure.net/
+
+AZURE_SQL_CATALOG_CONNECTION_STRING_KEY
+connectionString
+
+AZURE_SQL_IDENTITY_CONNECTION_STRING_KEY
+connectionString
+
+
+======================================
+
+==ACR==================================
+az login
+az acr create --name finalassignmentcontainerregistry --resource-group FinalAssignment --sku standard --admin-enabled true
+az acr login --name finalassignmentcontainerregistry
+//az acr update -n finalassignmentcontainerregistry --admin-enabled true
+//second response
+//https://learn.microsoft.com/en-us/answers/questions/1371613/how-to-fix-issue-in-the-azure-container-registry-s
+//docker run -d -p 5001:80 --name public-api-container public-api-container:latest
+
+docker build -t public-api-container:latest -f src/PublicApi/Dockerfile .
+
+docker tag public-api-container:latest finalassignmentcontainerregistry.azurecr.io/public-api-container:latest
+
+az acr login --name finalassignmentcontainerregistry
+
+docker push finalassignmentcontainerregistry.azurecr.io/public-api-container:latest
+======================================
+
